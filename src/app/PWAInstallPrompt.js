@@ -45,7 +45,7 @@ export default function PWAInstallPrompt() {
       </button>
       <button
         onClick={() =>
-          (window.location.href = "walletsync.page.link")
+          (window.location.href = "walletsync.page.link://")
         }
       >
         click me
