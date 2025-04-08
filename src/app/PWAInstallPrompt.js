@@ -13,17 +13,21 @@ export default function PWAInstallPrompt() {
   }, []);
 
   const handleInstallClick = () => {
-    const appScheme = 'com.walletsync.expensemanager://';
+    const scheme = 'com.walletsync.expensemanager://';
+    const fallbackUrl = 'https://play.google.com/store/apps/details?id=com.walletsync.expensemanager';
 
-    // Create a hidden iframe to try opening the app
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    iframe.src = appScheme;
-    document.body.appendChild(iframe);
+    const now = Date.now();
 
-    // Clean up after a short delay
+    // Try opening app
+    window.location.href = scheme;
+
+    // Set timeout to detect if app is not opened
     setTimeout(() => {
-      document.body.removeChild(iframe);
+      const delta = Date.now() - now;
+      if (delta < 2000) {
+        // App not opened — fallback to Play Store
+        window.location.href = fallbackUrl;
+      }
     }, 1500);
   };
 
