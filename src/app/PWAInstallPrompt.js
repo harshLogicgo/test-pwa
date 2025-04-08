@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 export default function PWAInstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false);
@@ -13,8 +13,9 @@ export default function PWAInstallPrompt() {
   }, []);
 
   const handleInstallClick = () => {
-    const scheme = 'com.walletsync.expensemanager://';
-    const fallbackUrl = 'https://play.google.com/store/apps/details?id=com.walletsync.expensemanager';
+    const scheme = "com.walletsync.expensemanager://";
+    const fallbackUrl =
+      "https://play.google.com/store/apps/details?id=com.walletsync.expensemanager";
 
     const now = Date.now();
 
@@ -41,6 +42,13 @@ export default function PWAInstallPrompt() {
         className="mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
       >
         Open App
+      </button>
+      <button
+        onClick={() =>
+          (window.location.href = "com.walletsync.expensemanager://")
+        }
+      >
+        click me
       </button>
     </div>
   );
