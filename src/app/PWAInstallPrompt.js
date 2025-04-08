@@ -2,44 +2,54 @@
 
 import { useEffect, useState } from "react";
 
-export default function InstallPWAButton() {
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [showInstall, setShowInstall] = useState(false);
+export default function PWAInstallPrompt() {
+  const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
-    const handleBeforeInstallPrompt = (e) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-      setShowInstall(true); // Show your custom install button
-    };
-
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-
-    return () =>
-      window.removeEventListener(
-        "beforeinstallprompt",
-        handleBeforeInstallPrompt
-      );
+    const isAndroid = /android/i.test(navigator.userAgent);
+    if (isAndroid) {
+      setShowPrompt(true);
+    }
   }, []);
 
-  const handleInstallClick = async () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt(); // Show browser install prompt
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log("Install outcome:", outcome);
-      setDeferredPrompt(null);
-      setShowInstall(false); // Hide button after use
-    }
+  const handleInstallClick = () => {
+    const scheme = "com.walletsync.expensemanager://";
+    const fallbackUrl =
+      "https://play.google.com/store/apps/details?id=com.walletsync.expensemanager";
+
+    const now = Date.now();
+
+    // Try opening app
+    window.location.href = scheme;
+
+    // Set timeout to detect if app is not opened
+    setTimeout(() => {
+      const delta = Date.now() - now;
+      if (delta < 2000) {
+        // App not opened — fallback to Play Store
+        window.location.href = fallbackUrl;
+      }
+    }, 1500);
   };
 
-  if (!showInstall) return null;
+  if (!showPrompt) return null;
 
   return (
-    <button
-      onClick={handleInstallClick}
-      className="fixed bottom-4 right-4 px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700"
-    >
-      Install WalletSync
-    </button>
+    <div className="fixed bottom-4 right-4 bg-white border shadow-lg rounded-lg p-4 z-50">
+      <p>Open in WalletSync App</p>
+      <button
+        onClick={handleInstallClick}
+        className="mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+      >
+        Open App
+      </button>
+      <button
+        onClick={() => {
+          window.location.href = "com.walletsync.expensemanager://";
+        }}
+      >
+        click me
+      </button>
+    </div>
   );
 }
